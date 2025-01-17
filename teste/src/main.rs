@@ -1,43 +1,43 @@
-use std::io;
-use rand::Rng;
-use std::cmp::Ordering;
+use std::{f64::consts::PI, io};
 
-fn main() {
+fn main(){
 
-    println!("Advinhe o numero");
+    let valor_absoluto: f64 = 0.00001;
 
-    let segredo = rand::thread_rng().gen_range(1..=100);
+    let mut valor_graus: f64 = 0.0;
+    let mut texto = String::new();
+    
+    println!("Calculo de cosseno");
+    println!("Insira o valor em graus para ser calculado seu cosseno: ");
 
+    io::stdin()
+        .read_line(&mut texto)
+        .expect("Falha ao ler");
 
-    loop{
+    valor_graus = texto.trim().parse().expect("Nao eh um numero valido");
+    let mut radianos = graus_para_radiano(valor_graus);
+    
+    let mut iteracao: f64 = 0.0;
 
-        println!("Por favor, insira sua advinha: ");
-
-        let mut advinha = String::new();
-
-        io::stdin()
-            .read_line(&mut advinha)
-            .expect("falha ao ler");
-
-        println!("Voce advinhou: {}", advinha);
-
-        let advinha: u32 = match advinha.trim().parse() {
-            Ok(num) => num,
-            Err(_) => continue,
-        };
-
-
-        match advinha.cmp(&segredo) {
-            Ordering::Less => println!("Abaixo!"),
-            Ordering::Greater => println!("Acima"),
-            Ordering::Equal => {
-                println!("Acertou!");
-                break;
-            }
-        }
-
+    while radianos > valor_absoluto {
+        radianos += ((f64::powf(-1.0,iteracao))/(fatorial(2.0*iteracao))) * f64::powf(radianos,2.0*iteracao);
+        iteracao += 1.0;
     }
+
+    println!("O cosseno do angulo inserido eh: {radianos}");
+
 }
 
-// mut indica uma variável mutável
-// a ausência de mut implica uma variável imutável; em Rust, as variáveis são imutáveis por padrão
+fn graus_para_radiano(x: f64) -> f64 {
+    x * (PI/180.0)
+}
+
+fn fatorial(x: f64) -> f64 {
+
+    if x <= 1.0 {
+        return 1.0;
+    }
+
+    return x * fatorial(x-1.0);
+        
+}
